@@ -4,6 +4,9 @@ from .views import *
 
 urlpatterns = [
     path('feed-aquarium/', FeedAquarium.as_view()),
-    path('aquarium/', AquariumReadCreate.as_view())
+    path('aquarium/', AquariumReadCreate.as_view()),
+    path('fish/', AddFish.as_view()),
+    path('algae/', AddAlgae.as_view()),
+    path('shrimp/', AddShrimp.as_view())
 ]
 

@@ -9,10 +9,32 @@ import jwt
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         jwt_token = request.META.get('HTTP_AUTHORIZATION')
+        print(jwt_token)
         if jwt_token is None:
             return None
 
         jwt_token = JWTAuthentication.get_the_token_from_header(jwt_token)
+
+        try:
+            payload = jwt.decode(jwt_token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+        except jwt.exceptions.InvalidSignatureError:
+            raise AuthenticationFailed('Invalid signature')
+        except jwt.DecodeError:
+            raise AuthenticationFailed('Invalid token')
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except Exception as e:
+            return str(e)
+
+        email = payload.get('email')
+        if email is None:
+            raise AuthenticationFailed('User identifier not found in JWT')
+
+        user = CustomUser.objects.filter(email=email).first()
+        if user is None:
+            raise AuthenticationFailed('User not found')
+
+        return user, payload
 
     @classmethod
     def create_access(cls, user):

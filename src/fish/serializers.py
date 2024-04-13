@@ -14,6 +14,20 @@ class AllSpeciesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+# class AddSpeciesSerializer(serializers.ModelSerializer):
+#     name = serializers.CharField(min_length=1)
+#
+#     class Meta:
+#         model = Species
+#         fields = ('name',)
+#
+#     def create(self, validated_data):
+#         name = validated_data.pop('name')
+#
+#         species, _ = Species.objects.get_or_create(name=name)
+#         return species
+
+
 class AllFishSerializer(serializers.ModelSerializer):
     gender = AllGenderSerializer()
     species = AllSpeciesSerializer()
@@ -26,33 +40,36 @@ class AllFishSerializer(serializers.ModelSerializer):
 class AddFishSerializer(serializers.ModelSerializer):
     gender = serializers.CharField(min_length=1)
     species = serializers.CharField(min_length=1)
-    quantity = serializers.IntegerField()
+    quantity = serializers.IntegerField(required=False)
 
     class Meta:
         model = Fish
         fields = ('gender', 'species', 'quantity')
 
     def create(self, validated_data):
+        print('create')
         user = self.context['request'].user
-        gender = validated_data.get('gender')
-        species = validated_data.get('species')
+        gender = validated_data.pop('gender')
+        species = validated_data.pop('species')
         quantity = validated_data.get('quantity')
+        print(gender)
 
         species, _ = Species.objects.get_or_create(name=species)
+        gender, _ = Gender.objects.get_or_create(name=gender)
 
         fish = Fish.objects.create(
             user=user,
             gender=gender,
-            species=species.id,
+            species=species,
             quantity=quantity
         )
-        aquarium = Aquarium.objects.get(user=user)
+        aquarium = Aquarium.objects.filter(user=user).first()
         aquarium.fish.add(fish)
         fish.save()
         return fish
 
 
-class AlgaeSerializer(serializers.ModelSerializer):
+class AddAlgaeSerializer(serializers.ModelSerializer):
     species = serializers.CharField(min_length=1)
     quantity = serializers.IntegerField()
 
@@ -62,17 +79,17 @@ class AlgaeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        species = validated_data.get('species')
-        quantity = validated_data.get('quantity')
+        species = validated_data.pop('species')
+        quantity = validated_data.pop('quantity')
 
         species, _ = Species.objects.get_or_create(name=species)
 
         algae = Algae.objects.create(
             user=user,
-            species=species.id,
+            species=species,
             quantity=quantity
         )
-        aquarium = Aquarium.objects.get(user=user)
+        aquarium = Aquarium.objects.filter(user=user).first()
         aquarium.algae.add(algae)
         algae.save()
         return algae
@@ -92,7 +109,7 @@ class AllShrimpSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ShrimpSerializer(serializers.ModelSerializer):
+class AddShrimpSerializer(serializers.ModelSerializer):
     # gender = serializers.CharField(min_length=1)
     species = serializers.CharField(min_length=1)
     quantity = serializers.IntegerField()
@@ -104,17 +121,17 @@ class ShrimpSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # gender = validated_data.get('gender')
         user = self.context['request'].user
-        species = validated_data.get('species')
-        quantity = validated_data.get('quantity')
+        species = validated_data.pop('species')
+        quantity = validated_data.pop('quantity')
 
         species, _ = Species.objects.get_or_create(name=species)
 
         shrimp = Shrimp.objects.create(
             user=user,
-            species=species.id,
+            species=species,
             quantity=quantity
         )
-        aquarium = Aquarium.objects.get(user=user)
+        aquarium = Aquarium.objects.filter(user=user).first()
         aquarium.shrimp.add(shrimp)
         shrimp.save()
         return shrimp
