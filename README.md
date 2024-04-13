@@ -14,7 +14,11 @@ Python 3.11+ is a must
     * On Windows: `venv\Scripts\activate`
     * On Linux or MacOS: `source venv/bin/activate`
 4. Install requirements: `pip install -r requirements.txt`
-5. Make migrations: `python manage.py migrate`
+5. Make migrations and migrate: 
+```
+python manage.py makemigrations
+python manage.py migrate
+```
 6. Now you can run it: `python manage.py runserver`
 
 ### Running with Docker
