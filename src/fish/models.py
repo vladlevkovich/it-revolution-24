@@ -70,9 +70,30 @@ class Aquarium(models.Model):
     fish = models.ManyToManyField(Fish, blank=True)
     algae = models.ManyToManyField(Algae, blank=True)
     shrimp = models.ManyToManyField(Shrimp, blank=True)
-    last_eat = models.DateTimeField(auto_now_add=True)
-    last_clean = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user} - {self.last_eat}'
+        return f'{self.user.email}'
+
+
+class Record(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f'{self.user.email} - {self.time}'
+
+
+class EatRecord(Record):
+    class Meta:
+        verbose_name = 'Eat record'
+        verbose_name_plural = 'Eat records'
+
+
+class CleanAquariumRecord(Record):
+    class Meta:
+        verbose_name = 'Clean aquarium record'
+        verbose_name_plural = 'Clean aquarium records'
