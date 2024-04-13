@@ -30,7 +30,6 @@ class AllSpeciesSerializer(serializers.ModelSerializer):
 
 
 class AllFishSerializer(serializers.ModelSerializer):
-    gender = AllGenderSerializer()
     species = AllSpeciesSerializer()
 
     class Meta:
@@ -39,28 +38,30 @@ class AllFishSerializer(serializers.ModelSerializer):
 
 
 class AddFishSerializer(serializers.ModelSerializer):
-    gender = serializers.CharField(min_length=1)
+    # gender = serializers.CharField(min_length=1)
+    is_male = serializers.BooleanField()
     species = serializers.CharField(min_length=1)
     quantity = serializers.IntegerField(required=False)
 
     class Meta:
         model = Fish
-        fields = ('gender', 'species', 'quantity')
+        fields = ('is_male', 'species', 'quantity')
 
     def create(self, validated_data):
         print('create')
         user = self.context['request'].user
-        gender = validated_data.pop('gender')
+        is_male = validated_data.pop('is_male')
         species = validated_data.pop('species')
         quantity = validated_data.get('quantity')
-        print(gender)
+        # print(gender)
 
         species, _ = Species.objects.get_or_create(name=species)
-        gender, _ = Gender.objects.get_or_create(name=gender)
+        # gender, _ = Gender.objects.get_or_create(name=gender)
 
         fish = Fish.objects.create(
             user=user,
-            gender=gender,
+            # gender=gender,
+            is_male=is_male,
             species=species,
             quantity=quantity
         )

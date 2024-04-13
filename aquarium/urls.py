@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .yasg import urlpatterns as doc_url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('src.users.urls')),
     path('aquarium/', include('src.fish.urls'))
 ]
+
+
+urlpatterns += doc_url
+

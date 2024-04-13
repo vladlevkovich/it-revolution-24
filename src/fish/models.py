@@ -27,7 +27,8 @@ class Fish(models.Model):
     """Модель риби"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    gender = models.ForeignKey(Gender, on_delete=models.PROTECT)
+    # gender = models.ForeignKey(Gender, on_delete=models.PROTECT)
+    is_male = models.BooleanField(default=False)    # гендер
     species = models.ForeignKey(Species, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
     is_death = models.BooleanField(default=False)
@@ -39,10 +40,12 @@ class Fish(models.Model):
 
 
 class Algae(models.Model):
-    """Модель водоростей"""
+    """Модель водоростей тепер модель равлика"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     species = models.ForeignKey(Species, on_delete=models.PROTECT)
+    is_male = models.BooleanField(default=False)
+    is_death = models.BooleanField(default=False)
     quantity = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -56,6 +59,7 @@ class Shrimp(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     species = models.ForeignKey(Species, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
+    is_male = models.BooleanField(default=False)
     is_death = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)

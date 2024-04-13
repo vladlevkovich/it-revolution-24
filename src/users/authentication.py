@@ -9,7 +9,6 @@ import jwt
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         jwt_token = request.META.get('HTTP_AUTHORIZATION')
-        print(jwt_token)
         if jwt_token is None:
             return None
 
