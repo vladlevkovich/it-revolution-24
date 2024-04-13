@@ -1,23 +1,27 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from django.utils import timezone
 from .serializers import *
 from .models import *
 
 
-class FeedAquarium(generics.GenericAPIView):
-    """годуємо рибок в акваріумі"""
+class FeedAquarium(generics.CreateAPIView):
+    """Годуємо рибок в акваріумі"""
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = EatRecordSerializer
 
-    def put(self, request):
-        try:
-            aquarium = Aquarium.objects.filter(user=request.user).first()
-        except Aquarium.DeosNotExist:
-            return Response({'message': 'Aquarium not found'}, status=status.HTTP_404_NOT_FOUND)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        return Response({'message': 'Eat record created successfully'}, status=status.HTTP_201_CREATED)
 
-        aquarium.last_eat = timezone.now()
-        aquarium.save()
-        return Response({'message': 'OK'}, status=status.HTTP_200_OK)
+
+class CleanAquarium(generics.CreateAPIView):
+    """Чистка акваріуму"""
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CleanAquariumRecordSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        return Response({'message': 'Clean aquarium record created successfully'}, status=status.HTTP_201_CREATED)
 
 
 class AddFish(generics.GenericAPIView):

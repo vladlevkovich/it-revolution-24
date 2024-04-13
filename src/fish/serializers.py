@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from datetime import timedelta
 
 
 class AllGenderSerializer(serializers.ModelSerializer):
@@ -137,10 +138,24 @@ class AddShrimpSerializer(serializers.ModelSerializer):
         return shrimp
 
 
+class EatRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EatRecord
+        fields = '__all__'
+
+
+class CleanAquariumRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CleanAquariumRecord
+        fields = '__all__'
+
+
 class ResidentSerializer(serializers.ModelSerializer):
     fish = AllFishSerializer(many=True, required=False)
     algae = AllAlgaeSerializer(many=True, required=False)
     shrimp = AllShrimpSerializer(many=True, required=False)
+    is_feed = serializers.SerializerMethodField()
+    is_clean = serializers.SerializerMethodField()
 
     class Meta:
         model = Aquarium
@@ -169,3 +184,18 @@ class ResidentSerializer(serializers.ModelSerializer):
         aquarium.save()
         return aquarium
 
+    def get_is_feed(self, obj):
+        last_feed_record = EatRecord.objects.filter(user=obj.user).last()
+
+        if last_feed_record:
+            if timezone.now() - last_feed_record.time <= timedelta(days=2):
+                return True
+        return False
+
+    def get_is_clean(self, obj):
+        last_clean_record = CleanAquariumRecord.objects.filter(user=obj.user).last()
+
+        if last_clean_record:
+            if timezone.now() - last_clean_record.time <= timedelta(days=7):
+                return True
+        return False
