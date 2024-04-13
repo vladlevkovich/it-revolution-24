@@ -1,6 +1,6 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserAuthSerializer
+from .serializers import UserRegisterSerializer, UserAuthSerializer, UpdateAccessTokenSerializer
 from .authentication import JWTAuthentication
 from .models import CustomUser
 
@@ -44,3 +44,14 @@ class AuthUser(generics.GenericAPIView):
             'access_token': access_token,
             'refresh_token': refresh_token
         })
+
+
+class UpdateAccessToken(generics.GenericAPIView):
+    serializer_class = UpdateAccessTokenSerializer
+
+    def put(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = serializer.data['refresh_token']
+        new_access_token = JWTAuthentication.update_access_token(token)
+        return Response({'access_token': new_access_token}, status=status.HTTP_200_OK)

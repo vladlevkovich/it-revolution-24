@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
 
-    'src.users'
+    'src.users',
+    'src.fish'
 ]
 
 MIDDLEWARE = [
