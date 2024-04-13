@@ -62,20 +62,13 @@ class Shrimp(models.Model):
 
 class Aquarium(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    fish = models.ForeignKey(Fish, on_delete=models.CASCADE)
-    algae = models.ForeignKey(Algae, on_delete=models.CASCADE)
-    shrimp = models.ForeignKey(Shrimp, on_delete=models.CASCADE)
-    last_eaten = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE)
+    fish = models.ManyToManyField(Fish, blank=True)
+    algae = models.ManyToManyField(Algae, blank=True)
+    shrimp = models.ManyToManyField(Shrimp, blank=True)
+    last_eat = models.DateTimeField(auto_now_add=True)
+    last_clean = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True)
 
-
-# class Aquarium(models.Model):
-#     """Модель акваріуму"""
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-#     gender = models.ForeignKey(Gender, blank=True, null=True, on_delete=models.PROTECT)
-#     type_fish = models.ForeignKey(Species, blank=True, null=True, on_delete=models.PROTECT)
-#     count = models.IntegerField(default=1)
-
-    # def __str__(self):
-    #     return f'{self.type_fish} - {self.count}'
+    def __str__(self):
+        return f'{self.user} - {self.last_eat}'

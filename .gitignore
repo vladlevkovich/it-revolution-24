@@ -5,4 +5,5 @@ venv
 *.pyc
 
 0001_initial.py
+0002_initial.py
 db.sqlite3

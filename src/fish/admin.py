@@ -7,4 +7,5 @@ admin.site.register(Species)
 admin.site.register(Fish)
 admin.site.register(Algae)
 admin.site.register(Shrimp)
+admin.site.register(Aquarium)
 
