@@ -6,4 +6,6 @@ venv
 
 0001_initial.py
 0002_initial.py
+0003_shrimp_is_male.py
+0004_algae_is_death_algae_is_male.py
 db.sqlite3
