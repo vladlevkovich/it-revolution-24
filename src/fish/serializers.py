@@ -139,12 +139,16 @@ class AddShrimpSerializer(serializers.ModelSerializer):
 
 
 class EatRecordSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.email')
+
     class Meta:
         model = EatRecord
         fields = '__all__'
 
 
 class CleanAquariumRecordSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.email')
+
     class Meta:
         model = CleanAquariumRecord
         fields = '__all__'
