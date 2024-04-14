@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+from aquarium  import base
 import os
 import sys
 
 
 def main():
     """Run administrative tasks."""
+    if base.DEBUG is True:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aquarium.settings.develop')
+    else:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aquarium.settings.prod')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aquarium.settings')
     try:
         from django.core.management import execute_from_command_line
