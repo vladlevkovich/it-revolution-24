@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-ALLOWED_HOSTS = ['.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 DATABASES = {
