@@ -1,4 +1,4 @@
-from aquarium.settings import *
+from aquarium.base import *
 
 ALLOWED_HOSTS = []
 
