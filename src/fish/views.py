@@ -1,20 +1,12 @@
 from django.http import HttpResponse
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import *
 from .models import *
 import json
 import requests
-
-
-class DeadFish(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def put(self, request):
-        pass
 
 
 class Analytics(generics.GenericAPIView):
@@ -27,10 +19,10 @@ class Analytics(generics.GenericAPIView):
         live_fish = Fish.objects.filter(is_death=False, user=request.user).count()
         fish_death = Fish.objects.filter(is_death=True, user=request.user).count()
 
-        algae = Algae.objects.filter(is_death=False, user=request.user).count()
-        algae_male = Algae.objects.filter(is_male=True, user=request.user).count()
-        algae_girl = Algae.objects.filter(is_male=False, user=request.user).count()
-        algae_death = Algae.objects.filter(is_death=True, user=request.user).count()
+        algae = Snail.objects.filter(is_death=False, user=request.user).count()
+        algae_male = Snail.objects.filter(is_male=True, user=request.user).count()
+        algae_girl = Snail.objects.filter(is_male=False, user=request.user).count()
+        algae_death = Snail.objects.filter(is_death=True, user=request.user).count()
 
         live_shrimp = Shrimp.objects.filter(is_death=False, user=request.user).count()
         shrimp_death = Shrimp.objects.filter(is_death=True, user=request.user).count()
@@ -74,6 +66,7 @@ class FeedAquarium(generics.CreateAPIView):
         serializer.save(user=self.request.user)
         return Response({'message': 'Eat record created successfully'}, status=status.HTTP_201_CREATED)
 
+
 class CleanAquarium(generics.CreateAPIView):
     """Чистка акваріуму"""
     permission_classes = [permissions.IsAuthenticated]
@@ -116,8 +109,24 @@ class AddFish(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class AddAlgae(generics.GenericAPIView):
-    serializer_class = AddAlgaeSerializer
+class FishUpdate(generics.UpdateAPIView):
+    serializer_class = UpdateFishSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        fish_id = self.kwargs.get('pk')
+        return Fish.objects.get(user=self.request.user, id=fish_id)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_queryset()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AddSnail(generics.GenericAPIView):
+    serializer_class = AddSnailSerializer
 
     @swagger_auto_schema(
         request_body=openapi.Schema(
@@ -143,6 +152,21 @@ class AddAlgae(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class AlgaeUpdate(generics.UpdateAPIView):
+    serializer_class = UpdateSnailSerializer
+
+    def get_queryset(self):
+        algae_id = self.kwargs.get('pk')
+        return Snail.objects.get(id=algae_id, user=self.request.user)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_queryset()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AddShrimp(generics.GenericAPIView):
@@ -173,6 +197,21 @@ class AddShrimp(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ShrimpUpdate(generics.UpdateAPIView):
+    serializer_class = UpdateShrimpSerializer
+
+    def get_queryset(self):
+        shrimp_id = self.kwargs.get('pk')
+        return Shrimp.objects.get(id=shrimp_id, user=self.request.user)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_queryset()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AquariumReadCreate(generics.GenericAPIView):

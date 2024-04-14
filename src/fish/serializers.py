@@ -36,7 +36,6 @@ class AddFishSerializer(serializers.ModelSerializer):
         fields = ('is_male', 'species', 'quantity')
 
     def create(self, validated_data):
-        print('create')
         user = self.context['request'].user
         is_male = validated_data.pop('is_male')
         species = validated_data.pop('species')
@@ -59,12 +58,32 @@ class AddFishSerializer(serializers.ModelSerializer):
         return fish
 
 
-class AddAlgaeSerializer(serializers.ModelSerializer):
+class UpdateFishSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField()
+    is_death = serializers.BooleanField()
+
+    class Meta:
+        model = Fish
+        fields = ('quantity', 'is_death')
+
+    def update(self, instance, validated_data):
+        quantity = validated_data.get('quantity')
+        # is_death = validated_data.get('is_death')
+        if quantity < 0:
+            raise ValueError('Quantity error!')
+
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.is_death = validated_data.get('is_death', instance.is_death)
+        instance.save()
+        return instance
+
+
+class AddSnailSerializer(serializers.ModelSerializer):
     species = serializers.CharField(min_length=1)
     quantity = serializers.IntegerField()
 
     class Meta:
-        model = Algae
+        model = Snail
         fields = ('species', 'quantity')
 
     def create(self, validated_data):
@@ -74,7 +93,7 @@ class AddAlgaeSerializer(serializers.ModelSerializer):
 
         species, _ = Species.objects.get_or_create(name=species)
 
-        algae = Algae.objects.create(
+        algae = Snail.objects.create(
             user=user,
             species=species,
             quantity=quantity
@@ -85,11 +104,30 @@ class AddAlgaeSerializer(serializers.ModelSerializer):
         return algae
 
 
+class UpdateSnailSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField()
+    id_death = serializers.BooleanField()
+
+    class Meta:
+        model = Snail
+        fields = ('quantity', 'is_death')
+
+    def update(self, instance, validated_data):
+        quantity = validated_data.get('quantity')
+        if quantity < 0:
+            raise ValueError('Quantity error!')
+
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.is_death = validated_data.get('is_death', instance.is_death)
+        instance.save()
+        return instance
+
+
 class AllAlgaeSerializer(serializers.ModelSerializer):
     species = AllSpeciesSerializer()
 
     class Meta:
-        model = Algae
+        model = Snail
         fields = '__all__'
 
 
@@ -125,6 +163,25 @@ class AddShrimpSerializer(serializers.ModelSerializer):
         aquarium.shrimp.add(shrimp)
         shrimp.save()
         return shrimp
+
+
+class UpdateShrimpSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField()
+    is_death = serializers.BooleanField()
+
+    class Meta:
+        model = Shrimp
+        fields = ('quantity', 'is_death')
+
+    def update(self, instance, validated_data):
+        quantity = validated_data.get('quantity')
+        if quantity < 0:
+            raise ValueError('Quantity error!')
+
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.is_death = validated_data.get('is_death', instance.is_death)
+        instance.save()
+        return instance
 
 
 class EatRecordSerializer(serializers.ModelSerializer):
@@ -167,7 +224,7 @@ class ResidentSerializer(serializers.ModelSerializer):
             aquarium.fish.add(fish)
 
         for algae_id in algae_data:
-            algae = Algae.objects.get(pk=algae_id)
+            algae = Snail.objects.get(pk=algae_id)
             aquarium.algae.add(algae)
 
         for shrimp_id in shrimp_data:
