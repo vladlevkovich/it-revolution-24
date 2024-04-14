@@ -95,9 +95,11 @@ class EatRecord(Record):
     class Meta:
         verbose_name = 'Eat record'
         verbose_name_plural = 'Eat records'
+        abstract = False
 
 
 class CleanAquariumRecord(Record):
     class Meta:
         verbose_name = 'Clean aquarium record'
         verbose_name_plural = 'Clean aquarium records'
+        abstract = False
