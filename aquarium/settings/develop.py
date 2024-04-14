@@ -1,6 +1,6 @@
 from aquarium.base import *
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
