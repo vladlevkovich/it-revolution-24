@@ -1,11 +1,11 @@
-from aquarium.settings import *
+from aquarium.base import *
 from dotenv import load_dotenv
 import dj_database_url
 import os
 
 load_dotenv()
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.onrender.com']
 
 
 DATABASES = {
