@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
-from datetime import timedelta
+from datetime import *
+from django.utils import timezone
 
 
 class AllGenderSerializer(serializers.ModelSerializer):
