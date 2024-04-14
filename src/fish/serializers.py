@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from .models import *
 from datetime import timedelta
@@ -13,20 +14,6 @@ class AllSpeciesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Species
         fields = '__all__'
-
-
-# class AddSpeciesSerializer(serializers.ModelSerializer):
-#     name = serializers.CharField(min_length=1)
-#
-#     class Meta:
-#         model = Species
-#         fields = ('name',)
-#
-#     def create(self, validated_data):
-#         name = validated_data.pop('name')
-#
-#         species, _ = Species.objects.get_or_create(name=name)
-#         return species
 
 
 class AllFishSerializer(serializers.ModelSerializer):
