@@ -8,5 +8,6 @@ venv
 0002_initial.py
 0003_shrimp_is_male.py
 0004_algae_is_death_algae_is_male.py
+0003_rename_algae_snail.py
 db.sqlite3
 .env
